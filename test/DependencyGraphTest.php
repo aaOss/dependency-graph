@@ -26,33 +26,85 @@
 
 namespace AlmostAnything\DependencyGraphTest;
 
+use AlmostAnything\DependencyGraph\CircularDependencyException;
 use AlmostAnything\DependencyGraph\DependencyGraphNode as Node;
-use AlmostAnything\DependencyGraph\DependencyGraph as Graph;
+use PHPUnit_Framework_TestCase;
 
 /**
  * Description of DependencyGraphTest
  *
  * @author Rhys
  */
-class DependencyGraphTest {
+class DependencyGraphTest extends PHPUnit_Framework_TestCase {
 
-    public function testEverything() {
+    public function testGraph() {
+        $node1 = new Node('node_1');
+        $node2 = new Node('node_2');
+        $node3 = new Node('node_3');
 
-        /* creates a new graph object */
-        $node = new Node('Dad');
+        $this->assertEquals($node2->getValue(), $node1->addChild($node2)->getValue());
+        $this->assertEquals($node3->getValue(), $node2->addParent($node3)->getValue());
 
-        $node->child('Rhys') /* creates a child node with $node->graph, adds parent */
-                ->child('Sqeak'); /* graph object will have Dad, Rhys & Sqeak */
+        $node3->addParent($node1);
+
+        /*
+         *          $node1
+         *           /  \
+         *           |  $node3
+         *           |    /
+         *           $node2  
+         */
+
+        $this->assertTrue($node1->hasChild($node2));
+        $this->assertTrue($node2->hasParent($node1));
+
+        $this->assertTrue($node1->hasChild($node3));
+        $this->assertTrue($node3->hasParent($node1));
+
+        $this->assertTrue($node3->hasChild($node2));
+        $this->assertTrue($node2->hasParent($node3));
         
+        $this->assertTrue($node2->hasAncestor($node1));
+        $this->assertTrue($node1->hasDescendant($node2));
+    }
+
+    /**
+     * Test that circular dependencies are detected and prevented
+     */
+    public function testCircularDependency() {
+        /*
+         *          $node1
+         *           /  \
+         *           |  $node3
+         *           |    /
+         *           $node2  
+         *             |
+         *             x
+         *             |
+         *           $node1
+         */
+
+        $node1 = new Node('node_1');
+        $node2 = new Node('node_2');
+        $node3 = new Node('node_3');
+
+        $node1->addChild($node2);
+        $node1->addChild($node3);
+        $node2->addParent($node3);
+
+        $exThrown = false;
         
-        /* creates a new graph object with Mum */
-        $mum = new Node('Mum');
-        $mum->child('Seonaid');
+        try {
+            $node2->addChild($node1);
+        } catch (CircularDependencyException $ex) {
+            $this->assertEquals($node2->getValue(), $ex->subject->getValue());
+            $this->assertEquals($node1->getValue(), $ex->added->getValue());
+            $this->assertEquals(CircularDependencyException::OPPERATION_ADD_CHILD, $ex->type);
         
-        /* merges $mum->graph into $node->graph */
-        $node->find('Rhys')->parent($mum);
-        
-        /* Graph now has Dad, Mom, Rhys, Seonaid & Squeak */
+            $exThrown = true;
+        }
+
+        $this->assertTrue($exThrown, 'Circular dependency was not detected');
     }
 
 }

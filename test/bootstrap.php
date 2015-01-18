@@ -1,6 +1,6 @@
 <?php
 
-/*
+/* 
  * The MIT License
  *
  * Copyright 2015 Rhys.
@@ -24,11 +24,6 @@
  * THE SOFTWARE.
  */
 
-/**
- * Description of FluentApi
- *
- * @author Rhys
- */
-trait FluentApi {
-    
-}
+$loader = require 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+//$loader->add('AlmostAnything\DependencyGraph', dirname(__DIR__) . DIRECTORY_SEPARATOR . 'src');
+//$loader->add('AlmostAnything\DependencyGraphTest', dirname(__DIR__) . DIRECTORY_SEPARATOR . 'test');

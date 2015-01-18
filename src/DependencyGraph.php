@@ -52,7 +52,7 @@ class DependencyGraph {
             unset($this->nodes[$hash]);
         }
     }
-    
+
     public function merge(DependencyGraph $graph) {
         foreach ($graph->getRoots() as $root) {
             foreach ($root->getDescendents() as $node) {
@@ -60,10 +60,22 @@ class DependencyGraph {
                 $node->setGraph($this);
             }
         }
-        
+
         return $this;
     }
-    
+
+    public function topologicalSort() {
+        $result = [];
+
+        foreach ($this->getRoots() as $rNode) {
+            foreach ($rNode->getDescendents() as $desc) {
+                $result [] = $desc;
+            }
+        }
+
+        return $result;
+    }
+
     /**
      * Return the root nodes of the graph.
      * 

@@ -7,7 +7,13 @@
             "email": "rhys@almostanything.com.au"
         }
     ],
-    "require": {
-        
+    "autoload": {
+        "psr-4": {
+            "AlmostAnything\\DependencyGraph\\": "src",
+            "AlmostAnything\\DependencyGraphTest\\": "test"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.4.*"
     }
 }
