@@ -1,0 +1,13 @@
+{
+    "name": "almostanything/dependency-graph",
+    "description": "A simple dependency graph data structure",
+    "authors": [
+        {
+            "name": "Rhys Emmerson",
+            "email": "rhys@almostanything.com.au"
+        }
+    ],
+    "require": {
+        
+    }
+}
