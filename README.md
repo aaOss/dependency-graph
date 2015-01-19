@@ -24,7 +24,7 @@ Dependency Graphs can be disconnected so you may want to provide a DependencyGra
 
 ~~~php
 use AlmostAnything\DependencyGraph\DependencyGraphNode as Node;
-use AlmostAnything\DependencyGraph\DependencyGraphGraph as Graph;
+use AlmostAnything\DependencyGraph\DependencyGraph as Graph;
 
 $graph = new Graph();
 
