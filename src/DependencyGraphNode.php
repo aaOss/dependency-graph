@@ -27,9 +27,7 @@
 namespace AlmostAnything\DependencyGraph;
 
 /**
- * Very basic Dependency Graph for AssetHelper
- *
- * Needs to detect and prevent circular dependencies to truely be a dependecny graph.
+ * Dependency Graph data structure
  * 
  * @author Rhys
  */
