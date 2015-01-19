@@ -108,7 +108,7 @@ class DependencyGraphTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * Test that graph instances are handles correctly
+     * Test that graph instances are handled correctly
      */
     public function testDisconectedGraph() {
         /* graph 1 */
@@ -132,7 +132,7 @@ class DependencyGraphTest extends PHPUnit_Framework_TestCase {
         $graph1 = $node1->getGraph();
         $graph2 = $node4->getGraph();
         
-        /* we have two distinct connected at this point */
+        /* we have two distinct connected graphs at this point */
         $this->assertNotEquals(spl_object_hash($graph1), spl_object_hash($graph2), 'Disconnected graph should not be equal');
         
         foreach ([$node2, $node3] as $node) {
@@ -176,7 +176,7 @@ class DependencyGraphTest extends PHPUnit_Framework_TestCase {
         $graph = $node1->getGraph();
         $list = $graph->topologicalSort();
         
-        /* test that node does not occur before it's descendants in the resulting list */
+        /* test that node does not occur after it's descendants in the resulting list */
         foreach ($list as $i => $node) {
             for($j = $i + 1; $j < count($list); $j++) {
                 $this->assertFalse($node->hasAncestor($list[$j]));
