@@ -26,6 +26,7 @@
 
 namespace AlmostAnything\DependencyGraphTest;
 
+use AlmostAnything\DependencyGraph\DependencyGraph;
 use AlmostAnything\DependencyGraph\DependencyGraphNode as Node;
 
 /**
@@ -88,24 +89,25 @@ class AssetManager {
 
     public function buildGraph() {
         /* map of script nodes */
-        $graph = [];
-
+        $nodeMap = [];
+        $graph = new DependencyGraph();
+        
         /* create nodess from config */
         foreach ($this->scripts as $id => $script) {
-            $graph[$id] = $node = new Node((object) $script);
+            $nodeMap[$id] = $node = new Node((object) $script, $graph);
         }
 
         /* link scripts to their dependencies */
-        foreach ($graph as $id => $node) {
+        foreach ($nodeMap as $id => $node) {
             foreach ($node->getValue()->deps as $dep) {
-                if (isset($graph[$dep])) {
-                    $node->addParent($graph[$dep]);
+                if (isset($nodeMap[$dep])) {
+                    $node->addParent($nodeMap[$dep]);
                 }
             }
         }
 
         /* set the use property on ancestors of used scripts */
-        foreach ($graph as $node) {
+        foreach ($nodeMap as $node) {
             if ($node->getValue()->use) {
                 foreach ($node->getAncestors() as $anc) {
                     $anc->getValue()->use = true;
@@ -115,11 +117,11 @@ class AssetManager {
 
         /* return a reference to the graph object */
         
-        if (!$graph) {
+        if (!$nodeMap) {
             return null;
         }
         
-        $node = array_shift($graph);
+        $node = array_shift($nodeMap);
 
         return $node->getGraph();
     }

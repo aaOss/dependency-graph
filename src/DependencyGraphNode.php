@@ -71,6 +71,7 @@ class DependencyGraphNode {
         }
 
         $this->graph = $graph;
+        $graph->addNode($this);
     }
 
     /**

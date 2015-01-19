@@ -54,11 +54,9 @@ class DependencyGraph {
     }
 
     public function merge(DependencyGraph $graph) {
-        foreach ($graph->getRoots() as $root) {
-            foreach ($root->getDescendents() as $node) {
-                $this->addNode($node);
-                $node->setGraph($this);
-            }
+        foreach ($graph->getNodes() as $node) {
+            $this->addNode($node);
+            $node->setGraph($this);
         }
 
         return $this;
@@ -76,6 +74,14 @@ class DependencyGraph {
         return $result;
     }
 
+    public function hasNode(DependencyGraphNode $node) {
+        return array_key_exists(spl_object_hash($node), $this->nodes);
+    }
+    
+    public function getNodes() {
+        return $this->nodes;
+    }
+    
     /**
      * Return the root nodes of the graph.
      * 
