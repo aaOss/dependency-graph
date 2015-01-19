@@ -64,24 +64,42 @@ class DependencyGraph {
 
     public function topologicalSort() {
         $result = [];
+        $nodes = $this->nodes;
+        $temp = [];
+        $perm = [];
 
-        foreach ($this->getRoots() as $rNode) {
-            foreach ($rNode->getDescendents() as $desc) {
-                $result [] = $desc;
-            }
+        while (!empty($nodes)) {
+            $node = array_pop($nodes);
+            $this->_topSortVisit($node, $temp, $perm, $result);
         }
-
+        
         return $result;
+    }
+
+    protected function _topSortVisit(DependencyGraphNode $node, &$temp, &$perm, &$result) {
+        $hash = spl_object_hash($node);
+        if (isset($temp[$hash])) {
+            throw new CircularDependencyException();
+        }
+        if (!isset($perm[$hash])) {
+            $temp[$hash] = 1;
+            foreach ($node->getChildren() as $child) {
+                $this->_topSortVisit($child, $temp, $perm, $result);
+            }
+            $perm[$hash] = 1;
+            unset($temp[$hash]);
+            array_unshift($result, $node);
+        }
     }
 
     public function hasNode(DependencyGraphNode $node) {
         return array_key_exists(spl_object_hash($node), $this->nodes);
     }
-    
+
     public function getNodes() {
         return $this->nodes;
     }
-    
+
     /**
      * Return the root nodes of the graph.
      * 

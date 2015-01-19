@@ -155,7 +155,36 @@ class DependencyGraphTest extends PHPUnit_Framework_TestCase {
     }
     
     public function testTopologicalSort() {
+        $node1 = new Node('node_1');
+        $node2 = new Node('node_2');
+        $node3 = new Node('node_3');
+        $node4 = new Node('node_4');
+        $node5 = new Node('node_5');
+        $node6 = new Node('node_6');
         
+        $node1->addChild($node2);
+        $node1->addChild($node3);
+        $node2->addParent($node3);
+        
+        $node4->addChild($node5);
+        $node4->addChild($node6);
+        $node5->addParent($node6);
+        
+        $node3->addChild($node4);
+        $node2->addChild($node6);
+        
+        $graph = $node1->getGraph();
+        $list = $graph->topologicalSort();
+        
+        /* test that node does not occur before it's descendants in the resulting list */
+        foreach ($list as $i => $node) {
+            for($j = $i + 1; $j < count($list); $j++) {
+                $this->assertFalse($node->hasAncestor($list[$j]));
+            }
+            for($j = $i - 1; $j >= 0; $j--) {
+                $this->assertFalse($node->hasDescendant($list[$j]));
+            }
+        }
     }
             
     public function dont_testAssetManager() {
