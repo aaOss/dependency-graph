@@ -40,10 +40,10 @@ class DependencyGraphNode {
     protected $value;
 
     /** @var array */
-    protected $parents = [];
+    protected $parents = array();
 
     /** @var array */
-    protected $children = [];
+    protected $children = array();
 
     /**
      * Constructor
@@ -53,7 +53,7 @@ class DependencyGraphNode {
      * @param array $parents
      * @param array $children
      */
-    public function __construct($value, DependencyGraph $graph = null, $parents = [], $children = []) {
+    public function __construct($value, DependencyGraph $graph = null, $parents = array(), $children = array()) {
         $this->value = $value;
 
         foreach ($parents as $parent) {

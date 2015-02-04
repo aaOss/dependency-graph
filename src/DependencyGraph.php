@@ -33,7 +33,7 @@ namespace AlmostAnything\DependencyGraph;
  */
 class DependencyGraph {
 
-    protected $nodes = [];
+    protected $nodes = array();
 
     public function __construct() {
         
@@ -63,17 +63,17 @@ class DependencyGraph {
     }
 
     public function topologicalSort() {
-        $result = [];
+        $result = array();
         $nodes = $this->nodes;
-        $temp = [];
-        $perm = [];
+        $temp = array();
+        $perm = array();
 
         while (!empty($nodes)) {
             $node = array_pop($nodes);
             $this->_topSortVisit($node, $temp, $perm, $result);
         }
         
-        return $result;
+        return new \ArrayIterator($result);
     }
 
     protected function _topSortVisit(DependencyGraphNode $node, &$temp, &$perm, &$result) {
@@ -106,7 +106,7 @@ class DependencyGraph {
      * @return array
      */
     public function getRoots() {
-        $roots = [];
+        $roots = array();
 
         foreach ($this->nodes as $node) {
             if (!$node->isRoot()) {
@@ -118,7 +118,7 @@ class DependencyGraph {
     }
 
     public function getLeaves() {
-        $roots = [];
+        $roots = array();
 
         foreach ($this->nodes as $node) {
             if (!$node->isLeaf()) {

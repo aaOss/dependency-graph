@@ -176,8 +176,18 @@ class DependencyGraphTest extends PHPUnit_Framework_TestCase {
         $graph = $node1->getGraph();
         $list = $graph->topologicalSort();
         
-        /* test that node does not occur after it's descendants in the resulting list */
+        $nodes = array();
+        
+        /* 
+         * foreach node, 
+         *  test that node does not occur after it's descendants in the resulting list 
+         *  and that it does not occur before it's ancestors.
+         * 
+         * We're not concerned about the order of siblings or disconnected nodes.
+         */
         foreach ($list as $i => $node) {
+            $nodes []= $node->getValue();
+            
             for($j = $i + 1; $j < count($list); $j++) {
                 $this->assertFalse($node->hasAncestor($list[$j]));
             }
@@ -185,38 +195,11 @@ class DependencyGraphTest extends PHPUnit_Framework_TestCase {
                 $this->assertFalse($node->hasDescendant($list[$j]));
             }
         }
+        
+        /* assert that the list contains all nodes */
+        foreach (range(1, 6) as $i) { 
+            $this->assertContains('node_' . $i, $nodes);
+        }
     }
             
-    public function dont_testAssetManager() {
-        $assets = new AssetManager();
-        /* register javascript script files */
-        $assets->addScript('jquery', '/web/assets/js/jquery.min.js')
-                ->addScript('jquery-ui', '/web/assets/js/jquery-ui.min.js', ['jquery'])
-                ->addScript('datatables', '/web/assets/js/datatables.js', ['jquery'])
-                ->addScript('datatables-filter-plugin', '/web/assets/js/datatables.filter.js', ['datatables'])
-                ->addScript('bootstrap', '/web/assets/js/bootstrap.js', ['jquery'])
-                ->addScript('bootstrap-datepicker', '/web/assets/js/datepicker.js')
-                // app js file
-                ->addScript('my-app', '/web/assets/js/my-app.js', ['jquery', 'datatables', 'bootstrap-datepicker']);
-
-        // ...
-
-        /* use script files */
-        $assets->useScript('my-app');
-
-        // ...
-
-//        $scripts = $assets->scripts();
-
-        /* OUTPUT 
-         * 
-         * <script type="text/javascript" src="/web/assets/js/jquery.min.js">
-         * <script type="text/javascript" src="/web/assets/js/bootstrap.js">
-         * <script type="text/javascript" src="/web/assets/js/datatables.js">
-         * <script type="text/javascript" src="/web/assets/js/bootstrap.js">
-         * <script type="text/javascript" src="/web/assets/js/datepicker.js">
-         * 
-         */
-    }
-
 }
