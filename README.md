@@ -12,7 +12,7 @@ $jq = new Node('jquery.js');
 $bs = new Node('bootstrap.js');
 $dp = new Node('datepicker.js');
 
-$js->addChild($bs);
+$jq->addChild($bs);
 $dp->addParents($bs, $jq);
 
 $graph = $jq->getGraph();             // returns an instance of DependencyGraph
